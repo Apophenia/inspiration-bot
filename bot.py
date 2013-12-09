@@ -9,6 +9,9 @@ client=zulip.Client()
 f = open("inspirationalquotes.txt")
 flines = f.readlines()
 
+def tokenize(text):
+    return text.replace("."," . ").replace(","," ,")
+
 def respond(message):
     if message['type'] == 'private' and message['sender_email'] != 'bot@bot-email':
         client.send_message({
@@ -24,5 +27,4 @@ def make_table(text):
         table[(a,b)].append(c)
     return table
 
-print make_table("i love pairing with zach and also mary and also alan!")
 client.call_on_each_message(respond)
