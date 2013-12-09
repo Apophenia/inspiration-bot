@@ -24,5 +24,4 @@ def make_table(text):
         table[(a,b)].append(c)
     return table
 
-print make_table("i love pairing with zach and also mary and also alan!")
 client.call_on_each_message(respond)
