@@ -1,24 +1,26 @@
 import random
 import zulip
 import string
+import os
 from itertools import izip
 from collections import defaultdict
 
-client=zulip.Client()
+client=zulip.Client(os.environ['ZULIP_BOT_EMAIL'], os.environ['ZULIP_API_KEY'])
 
-f = open("inspirationalquotes.txt")
-flines = f.readlines()
+with open("inspirationalquotes.txt") as f:
+    fstring = f.read()
+
+flines = [line for line in fstring.split('\n')]
+
+def main():
+    table = make_table(tokenize(fstring))
+    client.call_on_each_message(lambda message: respond(message, table))
 
 def tokenize(text):
     return text.replace("."," . ").replace(","," ,")
 
-def respond(message):
-    if message['type'] == 'private' and message['sender_email'] != 'bot@bot-email':
-        client.send_message({
-            'type':'private',
-            'to': message['sender_email'],
-            'content': 'Dear ' + message['sender_full_name'] + ',\r\n' + str(random.choice(flines))
-        })
+def detokenize(text):
+    return text.replace(" .",".").replace(" ,",",")
 
 def make_table(text):
     parsed = string.split(text)
@@ -27,4 +29,34 @@ def make_table(text):
         table[(a,b)].append(c)
     return table
 
-client.call_on_each_message(respond)
+def initialize():
+    parsed = string.split(tokenize(str(random.choice(flines))))
+    return [parsed.pop(0), parsed.pop(0)]
+
+
+def make_chain(table):
+    return make_chain_with_seed(table, initialize())
+
+def make_chain_with_seed(table, chain):
+    if (chain[-1] == "." and len(chain) > 8):
+        return detokenize(" ".join(chain))
+    elif len(chain) > 45:
+        return detokenize(" ".join(chain)) + "."
+    else:
+        entry = table[chain[-2], chain[-1]]
+        if entry == []:
+            return make_chain_with_seed(table, chain + initialize())
+        else:
+            chain.append(random.choice(entry))
+            return make_chain_with_seed(table, chain)
+
+def respond(message, table):
+    if message['type'] == 'private' and message['sender_email'] != os.environ['ZULIP_BOT_EMAIL']:
+            client.send_message({
+                'type':'private',
+                'to': message['sender_email'],
+                'content': 'Dear ' + message['sender_full_name'] + ',\r\n' + unicode(make_chain(table), encoding='utf-8')
+            })
+
+if __name__ == "__main__":
+    main()
