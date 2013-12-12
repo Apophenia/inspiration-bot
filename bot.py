@@ -13,13 +13,13 @@ with open("inspirationalquotes.txt") as f:
 flines = [line for line in fstring.split('\n')]
 
 def main():
-    table = make_table(tokenize(fstring))
+    table = make_table(split_on_punctuation(fstring))
     client.call_on_each_message(lambda message: respond(message, table))
 
-def tokenize(text):
+def split_on_punctuation(text):
     return text.replace("."," . ").replace(","," ,")
 
-def detokenize(text):
+def join_on_punctuation(text):
     return text.replace(" .",".").replace(" ,",",")
 
 def make_table(text):
@@ -30,18 +30,17 @@ def make_table(text):
     return table
 
 def initialize():
-    parsed = string.split(tokenize(str(random.choice(flines))))
+    parsed = string.split(split_on_punctuation(str(random.choice(flines))))
     return [parsed.pop(0), parsed.pop(0)]
-
 
 def make_chain(table):
     return make_chain_with_seed(table, initialize())
 
 def make_chain_with_seed(table, chain):
     if (chain[-1] == "." and len(chain) > 8):
-        return detokenize(" ".join(chain))
+        return join_on_punctuation(" ".join(chain))
     elif len(chain) > 45:
-        return detokenize(" ".join(chain)) + "."
+        return join_on_punctuation(" ".join(chain)) + "."
     else:
         entry = table[chain[-2], chain[-1]]
         if entry == []:
