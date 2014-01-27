@@ -33,13 +33,19 @@ def initialize():
     parsed = string.split(split_on_punctuation(str(random.choice(flines))))
     return [parsed.pop(0), parsed.pop(0)]
 
+def is_original(chain):
+    for i in flines:
+        if (chain == i):
+            return False
+    return True
+
 def make_chain(table):
     return make_chain_with_seed(table, initialize())
 
 def make_chain_with_seed(table, chain):
-    if (chain[-1] == "." and len(chain) > 8):
+    if (chain[-1] == "." and len(chain) > 8 and is_original(join_on_punctuation(" ".join(chain)))):
         return join_on_punctuation(" ".join(chain))
-    elif len(chain) > 45:
+    elif ((len(chain) > 45) and (is_original(join_on_punctuation(" ".join(chain)) + "."))):
         return join_on_punctuation(" ".join(chain)) + "."
     else:
         entry = table[chain[-2], chain[-1]]
