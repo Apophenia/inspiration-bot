@@ -29,7 +29,7 @@ def make_table(text):
         table[(a,b)].append(c)
     return table
 
-def initialize():
+def generate_start():
     parsed = string.split(split_on_punctuation(str(random.choice(flines))))
     return [parsed.pop(0), parsed.pop(0)]
 
@@ -40,7 +40,7 @@ def is_original(chain):
     return True
 
 def make_chain(table):
-    return make_chain_with_seed(table, initialize())
+    return make_chain_with_seed(table, generate_start())
 
 def make_chain_with_seed(table, chain):
     if (chain[-1] == "." and len(chain) > 8 and is_original(join_on_punctuation(" ".join(chain)))):
