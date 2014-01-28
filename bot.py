@@ -39,21 +39,35 @@ def is_original(chain):
             return False
     return True
 
+def is_valid_chain(chain):
+    sentence = join_on_punctuation(" ".join(chain))
+    if (chain[-1] == "." and len(chain) > 8 and is_original(sentence)):
+            return True
+    elif (len(chain) > 45 and is_original(sentence)):
+            return True
+    else:
+            return False
+
+def create_sentence(chain):
+    sentence = join_on_punctuation(" ".join(chain))
+    if chain[-1] == ".":
+        return sentence
+    else:
+        return sentence + "."
+
 def make_chain(table):
     return make_chain_with_seed(table, generate_start())
 
 def make_chain_with_seed(table, chain):
-    if (chain[-1] == "." and len(chain) > 8 and is_original(join_on_punctuation(" ".join(chain)))):
-        return join_on_punctuation(" ".join(chain))
-    elif ((len(chain) > 45) and (is_original(join_on_punctuation(" ".join(chain)) + "."))):
-        return join_on_punctuation(" ".join(chain)) + "."
+    if is_valid_chain(chain):
+        return create_sentence(chain)
+
+    entry = table[chain[-2], chain[-1]]
+    if not entry:
+            chain += generate_start()
     else:
-        entry = table[chain[-2], chain[-1]]
-        if entry == []:
-            return make_chain_with_seed(table, chain + initialize())
-        else:
             chain.append(random.choice(entry))
-            return make_chain_with_seed(table, chain)
+    return make_chain_with_seed(table, chain)
 
 def respond(message, table):
     if message['type'] == 'private' and message['sender_email'] != os.environ['ZULIP_BOT_EMAIL']:
