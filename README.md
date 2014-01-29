@@ -26,6 +26,9 @@ If you'd like to run your own Inspiration Bot, you'll need to:
 * Set environment variables 'ZULIP_BOT_EMAIL' and 'ZULIP_API_KEY' to your Zulip bot's email/API key.
 * Run bot.py using the Zulip virtual environment.
 
+Thanks
+------
+Inspiration Bot was my first foray into Python! Many thanks to [Stephen] for inspiring this project, and to [Julia] and other Hacker Schoolers for helping me navigate the tricky parts. 
 
 License
 ----
@@ -33,3 +36,5 @@ MIT
 
 [Zulip]:http://zulip.com/hello
 [Zulip API]:http://zulip.com/api
+[Stephen]:https://github.com/phsteve
+[Julia]:https://github.com/jvns
