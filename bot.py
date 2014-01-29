@@ -8,9 +8,7 @@ from collections import defaultdict
 client=zulip.Client(os.environ['ZULIP_BOT_EMAIL'], os.environ['ZULIP_API_KEY'])
 
 with open("inspirationalquotes.txt") as f:
-    fstring = f.read()
-
-flines = [line for line in fstring.split('\n')]
+    flines = [line for line in f]
 
 def main():
     table = make_table(split_on_punctuation(fstring))
@@ -34,11 +32,8 @@ def generate_start():
     return [parsed.pop(0), parsed.pop(0)]
 
 def is_original(chain):
-    for i in flines:
-        if (chain == i):
-            return False
-    return True
-
+    return chain not in flines
+    
 def is_valid_chain(chain):
     sentence = join_on_punctuation(" ".join(chain))
     if (chain[-1] == "." and len(chain) > 8 and is_original(sentence)):
