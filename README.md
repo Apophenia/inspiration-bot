@@ -8,6 +8,11 @@ Version
 
 1.0
 
+Input text
+----
+Included in the repository is "inspirationalquotes.txt," which is a newline-delimited file consisting of quotes from Ralph Waldo Emerson's "Self-Reliance." This text results in output that is neither consistently inspirational nor particularly quotable, but it provides a reasonable example of what your input text might look like. 
+
+
 Ingredients
 -----------
 
